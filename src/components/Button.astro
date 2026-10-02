@@ -1,0 +1,51 @@
+---
+import { site } from "../config/site";
+import Icon from "./Icon.astro";
+
+interface Props {
+  cta: "inscricao" | "whatsapp";
+  pos: string; // posição na página, para tracking
+  variant?: "primary" | "secondary";
+  size?: "md" | "lg";
+  class?: string;
+}
+const {
+  cta,
+  pos,
+  variant = cta === "inscricao" ? "primary" : "secondary",
+  size = "lg",
+  class: className = "",
+} = Astro.props;
+const href = cta === "inscricao" ? site.inscricaoUrl : site.whatsappUrl;
+const external = href.startsWith("http");
+const sizes = { md: "px-5 py-2.5 text-sm", lg: "px-7 py-3.5 text-base" };
+const variants = {
+  primary: "overflow-hidden bg-gradient-to-r from-brand to-accent text-white shadow-glow hover:shadow-glow-lg",
+  secondary:
+    "border border-white/15 bg-white/5 text-fg backdrop-blur-md hover:border-emerald-400/50 hover:bg-emerald-400/10",
+};
+---
+<a
+  href={href}
+  class:list={[
+    "group relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]",
+    sizes[size],
+    variants[variant],
+    className,
+  ]}
+  data-cta={cta}
+  data-pos={pos}
+  {...(external ? { target: "_blank", rel: "noopener" } : {})}
+>
+  {variant === "primary" && (
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-[400%]"
+    />
+  )}
+  {cta === "whatsapp" && <Icon name="whatsapp" class="size-5 text-emerald-400" />}
+  <span class="relative"><slot /></span>
+  {cta === "inscricao" && (
+    <Icon name="arrow" class="relative size-5 transition-transform group-hover:translate-x-1" />
+  )}
+</a>

@@ -1,0 +1,58 @@
+---
+import "@fontsource-variable/plus-jakarta-sans";
+import "../styles/global.css";
+import { site } from "../config/site";
+import ogImage from "../assets/fotos/05.jpg";
+import { getImage } from "astro:assets";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = `${site.name} | Cursos ACLS e BLS`, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = await getImage({ src: ogImage, width: 1200, format: "jpg" });
+const ogUrl = new URL(og.src, Astro.site);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0b0f17" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>document.documentElement.classList.add("js");</script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Scroll reveal com IntersectionObserver
+      const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.1 },
+      );
+      els.forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

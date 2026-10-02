@@ -1,0 +1,64 @@
+---
+import Logo from "./Logo.astro";
+import { nav, site } from "../config/site";
+import { proximoEvento } from "../data/evento";
+
+const legais = [
+  { label: "Privacidade", href: "#" }, // TODO
+  { label: "Termos de uso", href: "#" }, // TODO
+  { label: "Política de reembolso", href: "#" }, // TODO
+];
+---
+<footer class="border-t border-line bg-ink-2">
+  <div class="border-b border-line bg-navy/60">
+    <p class="container-x py-4 text-center text-xs font-semibold tracking-[0.2em] text-accent-soft uppercase sm:text-sm">
+      Próximo curso: {proximoEvento.curso} · {proximoEvento.data} · {proximoEvento.local}
+    </p>
+  </div>
+
+  <div class="container-x grid gap-12 py-16 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <Logo variant="full" class="h-12 w-auto" />
+      <p class="mt-6 max-w-sm leading-relaxed text-muted">
+        Levamos conhecimento em saúde para todos. Cursos e palestras práticas para profissionais e público em geral,
+        dos primeiros socorros aos treinamentos avançados.
+      </p>
+    </div>
+
+    <nav aria-label="Rodapé" class="md:col-span-3">
+      <h2 class="text-xs font-semibold tracking-wider text-fg uppercase">Navegação</h2>
+      <ul class="mt-5 space-y-1">
+        {nav.map((item) => (
+          <li><a href={item.href} class="inline-flex min-h-10 items-center text-muted transition-colors hover:text-fg">{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="md:col-span-4">
+      <h2 class="text-xs font-semibold tracking-wider text-fg uppercase">Fale com a gente</h2>
+      <ul class="mt-5 space-y-1">
+        <li>
+          <a href={site.whatsappUrl} data-cta="whatsapp" data-pos="footer" class="inline-flex min-h-10 items-center text-muted transition-colors hover:text-fg">
+            WhatsApp
+          </a>
+        </li>
+        <li>
+          <a href={site.inscricaoUrl} data-cta="inscricao" data-pos="footer" class="inline-flex min-h-10 items-center text-muted transition-colors hover:text-fg">
+            Inscrições
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="container-x flex flex-col gap-4 py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>© {new Date().getFullYear()} {site.name}. Todos os direitos reservados.</p>
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {legais.map((l) => (
+          <li><a href={l.href} class="transition-colors hover:text-fg">{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,25 @@
+---
+const items = [
+  "Certificação internacional AHA & HSI",
+  "Prática em simulação realista",
+  "Instrutores médicos da emergência",
+  "Do básico ao avançado",
+  "Aprenda a agir com segurança",
+];
+---
+<div class="relative overflow-hidden border-y border-line bg-navy py-4" aria-label={items.join(" · ")}>
+  <div class="flex w-max animate-marquee motion-reduce:animate-none" aria-hidden="true">
+    {[0, 1].map(() => (
+      <ul class="flex shrink-0 items-center">
+        {items.map((item) => (
+          <li class="flex items-center gap-6 px-6 text-sm font-semibold tracking-[0.2em] whitespace-nowrap text-fg/80 uppercase">
+            <span class="text-accent">✦</span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-navy to-transparent"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-navy to-transparent"></div>
+</div>

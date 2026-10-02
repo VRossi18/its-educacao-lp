@@ -1,0 +1,102 @@
+---
+import Logo from "./Logo.astro";
+import Button from "./Button.astro";
+import Icon from "./Icon.astro";
+import { nav } from "../config/site";
+---
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300 data-[scrolled]:border-line data-[scrolled]:bg-slate-950/80 data-[scrolled]:shadow-lg data-[scrolled]:backdrop-blur-md"
+>
+  <div class="container-x flex h-16 items-center justify-between gap-6 sm:h-20">
+    <a href="#topo" class="shrink-0" aria-label="ITS – Instituto de Treinamentos em Saúde, voltar ao topo">
+      <Logo variant="full" class="hidden h-10 w-auto sm:block" />
+      <Logo variant="mark" class="h-8 w-auto sm:hidden" />
+    </a>
+
+    <nav aria-label="Principal" class="hidden lg:block">
+      <ul class="flex items-center gap-8 text-sm font-medium text-muted">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform hover:text-fg hover:after:scale-x-100"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden sm:block"><Button cta="inscricao" pos="header" size="md">Garantir minha vaga</Button></div>
+      <button
+        id="menu-open"
+        type="button"
+        class="inline-flex size-12 items-center justify-center rounded-full text-fg hover:bg-white/10 lg:hidden"
+        aria-label="Abrir menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <Icon name="menu" class="size-6" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[60] flex translate-x-full flex-col bg-ink/95 backdrop-blur-xl transition-transform duration-300 data-[open]:translate-x-0 lg:hidden"
+  aria-hidden="true"
+  inert
+>
+  <div class="container-x flex h-16 items-center justify-between">
+    <Logo variant="mark" alt="" class="h-8 w-auto" />
+    <button
+      id="menu-close"
+      type="button"
+      class="inline-flex size-12 items-center justify-center rounded-full hover:bg-white/10"
+      aria-label="Fechar menu"
+    >
+      <Icon name="close" class="size-6" />
+    </button>
+  </div>
+  <nav aria-label="Menu mobile" class="container-x flex flex-1 flex-col justify-center">
+    {nav.map((item) => (
+      <a href={item.href} class="border-b border-line py-5 text-3xl font-semibold tracking-tight">
+        {item.label}
+      </a>
+    ))}
+    <div class="mt-10 flex flex-col gap-3">
+      <Button cta="inscricao" pos="menu-mobile">Garantir minha vaga</Button>
+      <Button cta="whatsapp" pos="menu-mobile">Tirar dúvidas no WhatsApp</Button>
+    </div>
+  </nav>
+</div>
+
+<script>
+  const header = document.getElementById("site-header")!;
+  const sentinel = document.createElement("div");
+  sentinel.style.cssText = "position:absolute;top:0;left:0;height:24px;width:1px;pointer-events:none";
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([e]) => header.toggleAttribute("data-scrolled", !e.isIntersecting)).observe(sentinel);
+
+  const menu = document.getElementById("mobile-menu")!;
+  const openBtn = document.getElementById("menu-open")!;
+  const closeBtn = document.getElementById("menu-close")!;
+  const setOpen = (open: boolean) => {
+    menu.toggleAttribute("data-open", open);
+    menu.toggleAttribute("inert", !open);
+    menu.setAttribute("aria-hidden", String(!open));
+    openBtn.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+    (open ? closeBtn : openBtn).focus();
+  };
+  openBtn.addEventListener("click", () => setOpen(true));
+  closeBtn.addEventListener("click", () => setOpen(false));
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.hasAttribute("data-open")) setOpen(false);
+  });
+</script>

@@ -1,0 +1,60 @@
+---
+import Button from "./Button.astro";
+import Icon from "./Icon.astro";
+import { cursos } from "../data/cursos";
+---
+<section id="cursos" class="section relative bg-gradient-to-b from-ink via-navy-2/60 to-ink">
+  <div class="container-x">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="pill">Cursos</p>
+      <h2 class="mt-5 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+        Treinamentos para cada momento da sua jornada.
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-muted">
+        Dos primeiros socorros ao suporte avançado de vida, sempre com prática e certificação reconhecida.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {cursos.map((c, i) => (
+        <article
+          class="group flex flex-col rounded-3xl border border-white/5 bg-slate-900/50 p-7 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:bg-slate-900/80 lg:p-8"
+          data-reveal
+          style={`--reveal-delay:${i * 100}ms`}
+        >
+          <div class="flex items-start justify-between gap-4">
+            <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand-deep text-lg font-bold tracking-tight shadow-glow transition-transform duration-500 group-hover:scale-110">
+              {c.sigla}
+            </span>
+            <span class="rounded-full border border-line px-3 py-1 text-xs font-medium text-muted">{c.certificacao}</span>
+          </div>
+          <h3 class="mt-6 text-xl font-bold tracking-tight">{c.nome}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">{c.publico}</p>
+          <p class="mt-4 text-sm font-medium text-accent-soft">{c.cargaHoraria}</p>
+
+          <details class="group/d mt-6 border-t border-line pt-4">
+            <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between text-sm font-semibold [&::-webkit-details-marker]:hidden">
+              O que você vai aprender
+              <span class="inline-flex size-8 items-center justify-center rounded-full bg-white/5 transition-transform group-open/d:rotate-45">
+                <span class="text-lg leading-none">+</span>
+              </span>
+            </summary>
+            <ul class="mt-3 space-y-2.5">
+              {c.topicos.map((t) => (
+                <li class="flex gap-3 text-sm leading-relaxed text-muted">
+                  <Icon name="check" class="mt-0.5 size-4 shrink-0 text-accent-soft" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </details>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-14 flex flex-col items-center justify-center gap-3 sm:flex-row" data-reveal>
+      <Button cta="inscricao" pos="cursos">Garantir minha vaga</Button>
+      <Button cta="whatsapp" pos="cursos">Qual curso é para mim?</Button>
+    </div>
+  </div>
+</section>

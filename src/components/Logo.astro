@@ -1,0 +1,15 @@
+---
+// Logo ITS extraído em vetor do Brandbook (Logo/Brandbook - ITS_compressed.pdf, pág. 21).
+// Arquivos em public/brand: its-{full|mark|symbol}-{light|dark}.svg
+interface Props {
+  variant?: "full" | "mark" | "symbol";
+  tone?: "light" | "dark"; // light = branco para fundo escuro, dark = azul para fundo claro
+  class?: string;
+  alt?: string;
+}
+const { variant = "full", tone = "light", class: className = "", alt = "ITS – Instituto de Treinamentos em Saúde" } =
+  Astro.props;
+const size = { full: [1015, 332], mark: [690, 332], symbol: [333, 332] }[variant];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<img src={`${base}/brand/its-${variant}-${tone}.svg`} width={size[0]} height={size[1]} alt={alt} class={className} decoding="async" />

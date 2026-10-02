@@ -1,0 +1,89 @@
+---
+import type { ImageMetadata } from "astro";
+import Carrossel from "./Carrossel.astro";
+import Icon from "./Icon.astro";
+
+const fotosGlob = import.meta.glob<{ default: ImageMetadata }>("../assets/fotos/*.jpg", { eager: true });
+const feedbacksGlob = import.meta.glob<{ default: ImageMetadata }>("../assets/feedbacks/*.jpg", { eager: true });
+
+const fotos = Object.values(fotosGlob).map((m, i) => ({
+  src: m.default,
+  alt: `Foto de turma do ITS durante treinamento prático (${i + 1})`,
+}));
+const feedbacks = Object.values(feedbacksGlob).map((m, i) => ({
+  src: m.default,
+  alt: `Print de mensagem de aluno agradecendo pelo curso do ITS (${i + 1})`,
+}));
+---
+<section id="galeria" class="section relative bg-gradient-to-b from-ink via-navy to-ink">
+  <div class="container-x" data-reveal>
+    <p class="pill">Por dentro do ITS</p>
+    <h2 class="mt-5 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+      Turmas reais, prática de verdade.
+    </h2>
+    <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+      Veja como são os nossos treinamentos e o que os alunos dizem depois de cada turma.
+    </p>
+  </div>
+
+  <div class="mt-14 space-y-16">
+    <Carrossel id="carrossel-fotos" titulo="Fotos dos cursos" imagens={fotos} formato="foto" />
+    <Carrossel id="carrossel-feedbacks" titulo="Feedbacks dos alunos" imagens={feedbacks} formato="print" />
+  </div>
+
+  <dialog
+    id="lightbox"
+    class="m-auto max-h-[92vh] max-w-[92vw] overflow-visible bg-transparent p-0 backdrop:bg-black/85 backdrop:backdrop-blur-sm"
+    aria-label="Imagem ampliada"
+  >
+    <img id="lightbox-img" alt="" class="max-h-[88vh] max-w-[92vw] rounded-2xl object-contain shadow-2xl" />
+    <form method="dialog">
+      <button
+        class="absolute -top-4 -right-4 inline-flex size-12 items-center justify-center rounded-full bg-white text-ink shadow-lg"
+        aria-label="Fechar imagem"
+      >
+        <Icon name="close" class="size-5" />
+      </button>
+    </form>
+  </dialog>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-carrossel]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>("[data-track]")!;
+    const prev = root.querySelector<HTMLButtonElement>("[data-prev]")!;
+    const next = root.querySelector<HTMLButtonElement>("[data-next]")!;
+    const step = () => (track.firstElementChild as HTMLElement).offsetWidth + 20;
+    const update = () => {
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    };
+    prev.addEventListener("click", () => track.scrollBy({ left: -step() }));
+    next.addEventListener("click", () => track.scrollBy({ left: step() }));
+    // Começa com a imagem do meio centralizada
+    const centerMiddle = () => {
+      const items = track.children;
+      const mid = items[Math.floor((items.length - 1) / 2)] as HTMLElement;
+      const offset = mid.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+      track.scrollTo({ left: offset - (track.clientWidth - mid.offsetWidth) / 2, behavior: "instant" });
+    };
+    track.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    centerMiddle();
+    update();
+  });
+
+  const dialog = document.getElementById("lightbox") as HTMLDialogElement;
+  const img = document.getElementById("lightbox-img") as HTMLImageElement;
+  document.querySelectorAll<HTMLButtonElement>("[data-zoom]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const thumb = btn.querySelector("img")!;
+      img.src = btn.dataset.full!;
+      img.alt = thumb.alt;
+      dialog.showModal();
+    });
+  });
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+</script>
